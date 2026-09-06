@@ -78,17 +78,13 @@ except ImportError:
     )
 
 
-class ConfigDialog(QDialog):
+class ConfigWidget(QWidget):
     """
-    Simplified configuration dialog for the single 'Next' list workflow.
+    Configuration widget used inside Calibre Preferences -> Plugins -> Customize Plugin,
+    and embedded inside ConfigDialog.
     """
-    def __init__(self, gui, parent=None):
-        super().__init__(parent or gui)
-        self.gui = gui
-        self.db = gui.current_db
-        self.setWindowTitle("Configure Calibre Book Selector")
-        self.setMinimumWidth(500)
-        self.setMinimumHeight(440)
+    def __init__(self, parent=None):
+        super().__init__(parent)
         self.setup_ui()
 
     def setup_ui(self):
@@ -184,12 +180,54 @@ class ConfigDialog(QDialog):
         rules_layout.addWidget(self.series_checkbox)
         layout.addWidget(rules_group)
 
-        # Button row
-        btn_layout = QHBoxLayout()
+        # Reset row
+        reset_row = QHBoxLayout()
         self.reset_btn = QPushButton("Reset to Defaults", self)
         self.reset_btn.clicked.connect(self.handle_reset)
-        btn_layout.addWidget(self.reset_btn)
+        reset_row.addWidget(self.reset_btn)
+        reset_row.addStretch(1)
+        layout.addLayout(reset_row)
 
+    def handle_reset(self):
+        self.target_edit.setText(DEFAULT_TARGET_LIST)
+        self.exclude_read_checkbox.setChecked(DEFAULT_EXCLUDE_PERCENT_READ)
+        self.col_edit.setText(DEFAULT_PERCENT_READ_COLUMN)
+        self.author_spin.setValue(DEFAULT_MIN_AUTHOR_SEPARATION)
+        self.series_spin.setValue(DEFAULT_MIN_SERIES_SEPARATION)
+        self.series_checkbox.setChecked(True)
+
+    def save_settings(self):
+        target = self.target_edit.text().strip() or DEFAULT_TARGET_LIST
+        col = self.col_edit.text().strip() or DEFAULT_PERCENT_READ_COLUMN
+
+        set_pref(KEY_TARGET_LIST, target)
+        set_pref(KEY_PERCENT_READ_COLUMN, col)
+        set_pref(KEY_EXCLUDE_PERCENT_READ, self.exclude_read_checkbox.isChecked())
+        set_pref(KEY_MIN_AUTHOR_SEPARATION, self.author_spin.value())
+        set_pref(KEY_MIN_SERIES_SEPARATION, self.series_spin.value())
+        set_pref(KEY_ENFORCE_SERIES_ORDER, self.series_checkbox.isChecked())
+
+
+class ConfigDialog(QDialog):
+    """
+    Configuration dialog launched from the Calibre Book Selector toolbar menu.
+    """
+    def __init__(self, gui=None, parent=None):
+        super().__init__(parent or gui)
+        self.gui = gui
+        self.setWindowTitle("Configure Calibre Book Selector")
+        self.setMinimumWidth(500)
+        self.setup_ui()
+
+    def setup_ui(self):
+        layout = QVBoxLayout(self)
+        layout.setSpacing(12)
+
+        self.config_widget = ConfigWidget(self)
+        layout.addWidget(self.config_widget)
+
+        # Button row (Cancel, Save)
+        btn_layout = QHBoxLayout()
         btn_layout.addStretch(1)
 
         self.cancel_btn = QPushButton("Cancel", self)
@@ -203,24 +241,8 @@ class ConfigDialog(QDialog):
 
         layout.addLayout(btn_layout)
 
-    def handle_reset(self):
-        self.target_edit.setText(DEFAULT_TARGET_LIST)
-        self.exclude_read_checkbox.setChecked(DEFAULT_EXCLUDE_PERCENT_READ)
-        self.col_edit.setText(DEFAULT_PERCENT_READ_COLUMN)
-        self.author_spin.setValue(DEFAULT_MIN_AUTHOR_SEPARATION)
-        self.series_spin.setValue(DEFAULT_MIN_SERIES_SEPARATION)
-        self.series_checkbox.setChecked(True)
-
     def handle_save(self):
-        target = self.target_edit.text().strip() or DEFAULT_TARGET_LIST
-        col = self.col_edit.text().strip() or DEFAULT_PERCENT_READ_COLUMN
-
-        set_pref(KEY_TARGET_LIST, target)
-        set_pref(KEY_PERCENT_READ_COLUMN, col)
-        set_pref(KEY_EXCLUDE_PERCENT_READ, self.exclude_read_checkbox.isChecked())
-        set_pref(KEY_MIN_AUTHOR_SEPARATION, self.author_spin.value())
-        set_pref(KEY_MIN_SERIES_SEPARATION, self.series_spin.value())
-        set_pref(KEY_ENFORCE_SERIES_ORDER, self.series_checkbox.isChecked())
+        self.config_widget.save_settings()
         self.accept()
 
 

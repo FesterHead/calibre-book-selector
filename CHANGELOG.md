@@ -20,6 +20,7 @@ Release policy:
 - Embedded UI screenshot in `README.md` showcasing the live Book Selector dialog and real-time filtering stats.
 - Real-world statistics breakdown in `README.md` connecting live library metrics directly to the core business rules.
 - Explicit Prerequisites section in `README.md` documenting the Calibre Reading List companion plugin requirement and recommended custom columns.
+- `ConfigWidget` integration in `dialogs.py` and `__init__.py` enabling direct plugin customization via Calibre's **Preferences &rarr; Plugins &rarr; Customize plugin** interface.
 
 ### Changed
 

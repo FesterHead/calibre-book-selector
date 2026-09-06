@@ -1,3 +1,6 @@
+__license__   = 'MIT'
+__copyright__ = '2026, FesterHead'
+
 from calibre.customize import InterfaceActionBase
 
 
@@ -18,7 +21,15 @@ class CalibreBookSelectorPlugin(InterfaceActionBase):
         return True
 
     def config_widget(self):
-        return None
+        try:
+            from calibre_plugins.calibre_book_selector.dialogs import ConfigWidget
+        except ImportError:
+            from dialogs import ConfigWidget
+        return ConfigWidget()
+
+    def save_settings(self, config_widget):
+        config_widget.save_settings()
 
     def custom_init(self):
         pass
+
