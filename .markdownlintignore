@@ -1,0 +1,5 @@
+# Ignore AI-generated artifact documents
+implementation_plan.md
+walkthrough.md
+**/implementation_plan.md
+**/walkthrough.md
