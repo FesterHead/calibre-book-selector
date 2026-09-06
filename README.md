@@ -1,5 +1,13 @@
 # Calibre Book Selector Plugin
 
+[![GitHub Release](https://img.shields.io/github/v/release/FesterHead/calibre-book-selector?style=flat-square&color=AB9DF2&labelColor=221F22&logo=github)](https://github.com/FesterHead/calibre-book-selector/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/FesterHead/calibre-book-selector/total?style=flat-square&color=FC9867&labelColor=221F22&logo=github)](https://github.com/FesterHead/calibre-book-selector/releases)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/FesterHead/calibre-book-selector/release.yml?branch=main&style=flat-square&color=78DCE8&labelColor=221F22&logo=githubactions&logoColor=white)](https://github.com/FesterHead/calibre-book-selector/actions)
+[![Calibre](https://img.shields.io/badge/Calibre-6.0%20--%209.x-FF6188?style=flat-square&labelColor=221F22&logo=calibre&logoColor=white)](https://calibre-ebook.com)
+[![Python](https://img.shields.io/badge/Python-3.10+-78DCE8?style=flat-square&labelColor=221F22&logo=python&logoColor=white)](https://www.python.org)
+[![GUI](https://img.shields.io/badge/GUI-PyQt6-A9DC76?style=flat-square&labelColor=221F22&logo=qt&logoColor=white)](https://riverbankcomputing.com/software/pyqt/)
+[![License](https://img.shields.io/github/license/FesterHead/calibre-book-selector?style=flat-square&color=FFD866&labelColor=221F22)](LICENSE)
+
 Have a large Calibre library and find it tedious deciding what to add to your reading list?
 
 Calibre's built-in **"Pick a random book"** tool is completely blind to your reading workflow: it can pick books you've already read, select book #14 of a 20-book series out of order, or bunch the same author and series back-to-back in your queue.
