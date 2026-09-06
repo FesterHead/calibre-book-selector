@@ -23,6 +23,8 @@ Release policy:
 - Real-world statistics breakdown in `README.md` connecting live library metrics directly to the core business rules.
 - Explicit Prerequisites section in `README.md` documenting the Calibre Reading List companion plugin requirement and recommended custom columns.
 - `ConfigWidget` integration in `dialogs.py` and `__init__.py` enabling direct plugin customization via Calibre's **Preferences &rarr; Plugins &rarr; Customize plugin** interface.
+- `apply_settings()` hook in `action.py` and `__init__.py` following Calibre's plugin configuration lifecycle.
+- Packaged `about.txt` metadata file and 0-byte `plugin-import-name-calibre_book_selector.txt` per Calibre official manual guidelines.
 - Markdownlint configuration (`.markdownlint.json` and `.markdownlintignore`) to support standard Keep a Changelog heading structures.
 
 ### Changed

@@ -29,7 +29,9 @@ class CalibreBookSelectorPlugin(InterfaceActionBase):
 
     def save_settings(self, config_widget):
         config_widget.save_settings()
+        ac = getattr(self, 'actual_plugin_', None)
+        if ac is not None and hasattr(ac, 'apply_settings'):
+            ac.apply_settings()
 
     def custom_init(self):
         pass
-

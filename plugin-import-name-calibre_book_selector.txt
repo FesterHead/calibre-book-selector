@@ -1,1 +1,0 @@
-calibre_book_selector

@@ -141,3 +141,8 @@ class BookSelectorAction(InterfaceAction):
                 self.gui.tags_view.recount()
         except Exception as e:
             print(f"[CalibreBookSelector] Error refreshing UI: {e}")
+
+    def apply_settings(self):
+        """Called when settings are saved in Calibre Preferences."""
+        pass
+
