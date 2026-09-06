@@ -43,6 +43,8 @@ The **Calibre Book Selector** is a Calibre 9.x Interface Action plugin. It queri
 - `build_plugin.py`: Automation script to package into `calibre-book-selector.zip` and install into Calibre.
 - `CHANGELOG.md`: Project changelog following Keep a Changelog and SemVer.
 - `README.md`: End-user documentation.
+- `about.txt`: Metadata description and version file per Calibre plugin specification.
+- `plugin-import-name-calibre_book_selector.txt`: 0-byte file declaring the plugin import namespace.
 - `LICENSE`: MIT License.
 - `images/icon.png`: 128x128 high-DPI icon asset.
 
@@ -80,6 +82,7 @@ The **Calibre Book Selector** is a Calibre 9.x Interface Action plugin. It queri
 When releasing or minting a new version:
 
 1. **Source Version**: Update `version = (X, Y, Z)` in `__init__.py`.
-2. **Changelog**: Move unreleased changes in `CHANGELOG.md` into a new release header `## [X.Y.Z] - YYYY-MM-DD` and retain an empty `## [Unreleased]` section.
-3. **Consistency Rule**: `__init__.py` and `CHANGELOG.md` versions MUST remain identical at all times.
-4. **Automated Release**: When a pull request is merged into `main`, GitHub Actions creates a GitHub release tagged `vX.Y.Z` with the generated `calibre-book-selector.zip` asset.
+2. **About Metadata**: Update `Version: X.Y.Z` in `about.txt`.
+3. **Changelog**: Move unreleased changes in `CHANGELOG.md` into a new release header `## [X.Y.Z] - YYYY-MM-DD` and retain an empty `## [Unreleased]` section.
+4. **Consistency Rule**: `__init__.py`, `about.txt`, and `CHANGELOG.md` versions MUST remain identical at all times.
+5. **Automated Release**: When a pull request is merged into `main`, GitHub Actions creates a GitHub release tagged `vX.Y.Z` with the generated `calibre-book-selector.zip` asset.
