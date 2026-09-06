@@ -1,0 +1,47 @@
+name: Release Plugin
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build & Release Plugin
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Package Plugin
+        run: python build_plugin.py
+
+      - name: Upload Plugin Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: calibre-book-selector
+          path: calibre-book-selector.zip
+          retention-days: 30
+
+      - name: Create GitHub Release
+        if: github.ref == 'refs/heads/main'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(python -c "import re; m = re.search(r'version\s*=\s*\(([^)]+)\)', open('__init__.py').read()); print('.'.join(x.strip() for x in m.group(1).split(',') if x.strip()))")
+          TAG="v$VERSION"
+          echo "Target release tag: $TAG"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists. Skipping release creation."
+          else
+            gh release create "$TAG" calibre-book-selector.zip --title "Release $TAG" --generate-notes
+          fi

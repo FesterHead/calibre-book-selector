@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+*.zip
+calibre-book-selector.zip
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Calibre test/runtime artifacts
+*.log
+
+# Editor & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini

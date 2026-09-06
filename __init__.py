@@ -1,0 +1,24 @@
+from calibre.customize import InterfaceActionBase
+
+
+class CalibreBookSelectorPlugin(InterfaceActionBase):
+    name = 'Calibre Book Selector'
+    description = (
+        'Intelligently select eligible books and series entries to add '
+        'to your Reading List queue with automatic order progression.'
+    )
+    supported_platforms = ['windows', 'osx', 'linux']
+    author = 'FesterHead'
+    version = (1, 0, 0)
+    minimum_calibre_version = (6, 0, 0)
+
+    actual_plugin = 'calibre_plugins.calibre_book_selector.action:BookSelectorAction'
+
+    def is_customizable(self):
+        return True
+
+    def config_widget(self):
+        return None
+
+    def custom_init(self):
+        pass
