@@ -20,8 +20,8 @@ Calibre's built-in **"Pick a random book"** tool is completely blind to your rea
 
 Before installing Calibre Book Selector, ensure you have the following configured in Calibre:
 
-1. **[Reading List Plugin](https://www.mobileread.com/forums/showthread.php?t=134856)** (Essential companion plugin):
-   - Manages, displays, and reorders the reading queue in Calibre.
+1. **[Reading List Plugin](https://github.com/kiwidude68/calibre_plugins/wiki/Reading-List)** (Essential companion plugin; see also [MobileRead thread](https://www.mobileread.com/forums/showthread.php?t=134856)):
+   - Manages, displays, and reorders the reading queue in Calibre (documentation on the [Reading List Wiki](https://github.com/kiwidude68/calibre_plugins/wiki/Reading-List)).
    - Install via Calibre: **Preferences** → **Plugins** → **Get new plugins** → search for **Reading List**.
    - Create a list named **`Next`** (configured as _Manual list (orderable)_).
 2. **Read Status Column** (Recommended):
@@ -141,7 +141,7 @@ This project is developed and managed using Google AI models. The architecture, 
 
 - **Calibre Portable Path**: `E:\Calibre Portable`
 - **Active Library Path**: `M:\books\Libraries\Library`
-- **Reading List Plugin Integration**: Directly synchronizes with the Calibre _Reading List_ plugin (`Next` list) and updates custom column `#reading_list` tags and `#read_order` list positions.
+- **Reading List Plugin Integration**: Directly synchronizes with the Calibre [Reading List plugin](https://github.com/kiwidude68/calibre_plugins/wiki/Reading-List) (`Next` list) and updates custom column `#reading_list` tags and `#read_order` list positions.
 
 ---
 

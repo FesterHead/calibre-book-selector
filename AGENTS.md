@@ -6,7 +6,7 @@ This document provides architectural context, rules, and development guidelines 
 
 ## 🎯 Project Overview & Purpose
 
-The **Calibre Book Selector** is a Calibre 9.x Interface Action plugin. It queries the active Calibre library to find candidate books and queues them into a designated Reading List (default `"Next"`), strictly enforcing exclusions, series order constraints, and author/series spacing.
+The **Calibre Book Selector** is a Calibre 9.x Interface Action plugin. It queries the active Calibre library to find candidate books and queues them into a designated Reading List (default `"Next"`, via the [Reading List plugin](https://github.com/kiwidude68/calibre_plugins/wiki/Reading-List)), strictly enforcing exclusions, series order constraints, and author/series spacing.
 
 ---
 

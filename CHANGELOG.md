@@ -19,6 +19,7 @@ Release policy:
 - Packaged `about.txt` metadata description file and empty `plugin-import-name-calibre_book_selector.txt` per official Calibre plugin guidelines.
 - `apply_settings()` lifecycle callback in `action.py` and `__init__.py` to reload preferences when modified via Calibre's Customize Plugin interface.
 - Expanded version minting and synchronization rules across `__init__.py`, `about.txt`, and `CHANGELOG.md` in `AGENTS.md`, Copilot instructions, and PR template.
+- Documentation links to the official [Reading List plugin wiki](https://github.com/kiwidude68/calibre_plugins/wiki/Reading-List) in `README.md` and `AGENTS.md`.
 
 ## [1.0.1] - 2026-09-06
 
