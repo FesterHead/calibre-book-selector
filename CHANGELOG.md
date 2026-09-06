@@ -14,6 +14,17 @@ Release policy:
 
 ## [Unreleased]
 
+### Added
+
+- Monokai Pro styled badges in `README.md` for release version, total downloads, build status, Calibre compatibility, Python version, PyQt6 GUI framework, and MIT license.
+- Embedded UI screenshot in `README.md` showcasing the live Book Selector dialog and real-time filtering stats.
+- Real-world statistics breakdown in `README.md` connecting live library metrics directly to the core business rules.
+- Explicit Prerequisites section in `README.md` documenting the Calibre Reading List companion plugin requirement and recommended custom columns.
+
+### Changed
+
+- Formatted rule sections in `README.md` with clean markdown subheadings to satisfy strict markdownlint compliance (`MD033` and `MD051`).
+
 ## [1.0.0] - 2026-09-06
 
 ### Added

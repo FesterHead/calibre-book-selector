@@ -16,36 +16,73 @@ Calibre's built-in **"Pick a random book"** tool is completely blind to your rea
 
 ---
 
+## 📋 Prerequisites
+
+Before installing Calibre Book Selector, ensure you have the following configured in Calibre:
+
+1. **[Reading List Plugin](https://www.mobileread.com/forums/showthread.php?t=134856)** (Essential companion plugin):
+   - Manages, displays, and reorders the reading queue in Calibre.
+   - Install via Calibre: **Preferences** → **Plugins** → **Get new plugins** → search for **Reading List**.
+   - Create a list named **`Next`** (configured as _Manual list (orderable)_).
+2. **Read Status Column** (Recommended):
+   - A custom integer or float column tracking percent read (default: `#kobo_percent_read`) so completed and in-progress books (`% Read > 0`) are automatically excluded.
+3. **Queue Order Column** (Recommended):
+   - A custom series-type column (e.g. `#read_order`) linked to the **Next** list so queue positions (`Next Queue [1]`, `Next Queue [2]`, etc.) display directly in your library view.
+
+---
+
+## 🖥️ User Interface in Action
+
+![Calibre Book Selector UI](images/book-selector-ui.png)
+
+The live stats bar at the top of the dialog gives full visibility into how your library is filtered in real time:
+
+- **`Library: 512`**: Total books discovered in your active Calibre library.
+- **`Excluded: 225 (read or in Next)`**: Cleanly removes all finished or in-progress books (`% Read > 0`) and books already present in the **Next** queue ([Rule 1](#rule-1-clean-exclusion-logic)).
+- **`Series filtered: 178`**: Holds back higher-numbered series volumes so only the single lowest unread installment per series is offered ([Rule 2](#rule-2-strict-series-progression-and-dynamic-advancement)).
+- **`Spacing cooldown: 25`**: Books temporarily held back because their author or series appears within the trailing separation window of the **Next** list ([Rule 3](#rule-3-author-and-series-separation-constraints)).
+- **`84 eligible books`**: The resulting clean pool of unread, in-sequence, well-spaced candidates available for selection.
+- **`Target: Next → Next Order: #226`**: Displays the active target queue and the sequential order number that will be assigned to newly added books, matching the action button `+ Add Selected to 'Next' (Order #226)` ([Rule 4](#rule-4-sequential-order-increment)).
+
+---
+
 ## 📖 Key Rules & Features
 
-1. **Clean Exclusion Logic (Single "Next" List & % Read)**:
-   - **Queue Exclusion**: Any book currently present in your **"Next"** reading list is excluded from candidate selection.
-   - **Read Progress Exclusion**: Any book with reading progress (**`#kobo_percent_read > 0`**) is automatically excluded, cleanly eliminating both currently-reading books (e.g. 56%) and completed books (100%).
+### Rule 1: Clean Exclusion Logic
 
-2. **Strict Series Progression & Dynamic Advancement**:
-   - For any series in your library, only the book with the **lowest available series index** is eligible.
-   - **Dynamic Queueing Progression**:
-     - _Example_: If Books 1–3 of a series are read (100%) and Book 4 is in your **"Next"** list, Book 5 is the currently eligible candidate.
-     - When you add **Book 5** to **"Next"**, Book 5 moves into the queue, and **Book 6 immediately advances to become the new eligible candidate** for that series.
-     - Higher-numbered books in that series remain held back until earlier entries are queued or read.
-   - **Standalone Books**: Books not belonging to any series are always eligible as long as they haven't been read or queued.
-   - **Understanding the Stats Bar**:
-     - _Eligible Books_ = (Standalone unread books) + (1 lowest book per unread series).
-     - _Series Filtered_ = Total higher-indexed books across all series currently held back by the series rule.
+- **Queue Exclusion**: Any book currently present in your **"Next"** reading list is excluded from candidate selection.
+- **Read Progress Exclusion**: Any book with reading progress (**`#kobo_percent_read > 0`**) is automatically excluded, cleanly eliminating both currently-reading books (e.g. 56%) and completed books (100%).
+- _Real Example_: In the screenshot above, **225 books** are excluded because they are already read or already queued in **Next**.
 
-3. **Author & Series Separation Constraints**:
-   - **Minimum Author Separation** (default: `6`): Prevents books by the same author from being queued too close together. Authors appearing in the last $N$ entries of the **"Next"** list are placed in cooldown.
-   - **Minimum Series Separation** (default: `6`): Prevents books from the same series from appearing within $N$ entries of each other in the queue.
-   - Both separation values can be customized or disabled (set to `0`) in the plugin settings.
+### Rule 2: Strict Series Progression and Dynamic Advancement
 
-4. **Sequential Order Increment**:
-   - Books added to **"Next"** are automatically appended to the end of the list and assigned the next sequential **Order** position.
-   - For example, if there are 175 books in **"Next"** (Orders 1–175), adding a book assigns it **Order #176**.
+- For any series in your library, only the book with the **lowest available series index** is eligible.
+- **Real Example in Table**:
+  - _A Song of Ice and Fire_: Lists Book 2 (_A Clash of Kings_) because Book 1 is read.
+  - _Alex Cross_: Lists Book 7 (_Violets Are Blue_) because Books 1–6 are read/queued.
+  - _Atlee Pine_: Lists Book 1 (_Long Road to Mercy_).
+  - _Cormoran Strike_: Lists Book 3 (_Career of Evil_).
+  - All other **178 higher-indexed books** across your series are held back by the series progression filter.
+- **Dynamic Queueing Progression**:
+  - When you queue Book 2 of a series into **Next**, it enters the reading list and Book 3 immediately advances to become the new eligible candidate.
+- **Standalone Books**: Books not belonging to any series (e.g. _1922_, _Armada_, _Carrie_, _Christine_, _Cujo_) are always eligible as long as they are unread and clear of spacing cooldowns.
 
-5. **Interactive UI & 1-Click Quick Add**:
-   - **Interactive Selector Dialog**: Browse all eligible books, filter in real-time by title, author, series, or tags, roll a random pick, and add selected books.
-   - **⚡ Quick Random Add**: Instantly pick and queue a random eligible book with a single click from the toolbar menu.
-   - **Settings Dialog**: Adjust author spacing, series spacing, read exclusion column, and toggle series enforcement.
+### Rule 3: Author and Series Separation Constraints
+
+- **Minimum Author Separation** (default: `6`): Prevents books by the same author from being queued too close together. Authors appearing in the last $N$ entries of the **"Next"** list are placed in cooldown.
+- **Minimum Series Separation** (default: `6`): Prevents books from the same series from appearing within $N$ entries of each other in the queue.
+- _Real Example_: In the screenshot, **25 books** are currently held in cooldown because their author or series was queued recently in the trailing entries of **Next**. Both separation values can be customized or disabled (set to `0`) in Settings.
+
+### Rule 4: Sequential Order Increment
+
+- Books added to **"Next"** are automatically appended to the end of the list and assigned the next sequential **Order** position.
+- _Real Example_: With 225 books currently in **Next**, the status bar and bottom button dynamically display `Target: Next → Next Order: #226` and `+ Add Selected to 'Next' (Order #226)`.
+
+### Rule 5: Interactive UI and Quick Add
+
+- **Interactive Selector Dialog**: Browse all eligible books, filter in real-time by title, author, series, or tags, roll a random pick, and add selected books.
+- **⚡ Quick Random Add**: Instantly pick and queue a random eligible book with a single click from the toolbar menu.
+- **Settings Dialog**: Adjust author spacing, series spacing, read exclusion column, and toggle series enforcement.
 
 ---
 
