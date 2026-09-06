@@ -14,6 +14,8 @@ Release policy:
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-09-06
+
 ### Added
 
 - Monokai Pro styled badges in `README.md` for release version, total downloads, build status, Calibre compatibility, Python version, PyQt6 GUI framework, and MIT license.
@@ -21,6 +23,7 @@ Release policy:
 - Real-world statistics breakdown in `README.md` connecting live library metrics directly to the core business rules.
 - Explicit Prerequisites section in `README.md` documenting the Calibre Reading List companion plugin requirement and recommended custom columns.
 - `ConfigWidget` integration in `dialogs.py` and `__init__.py` enabling direct plugin customization via Calibre's **Preferences &rarr; Plugins &rarr; Customize plugin** interface.
+- Markdownlint configuration (`.markdownlint.json` and `.markdownlintignore`) to support standard Keep a Changelog heading structures.
 
 ### Changed
 
