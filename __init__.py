@@ -12,7 +12,7 @@ class CalibreBookSelectorPlugin(InterfaceActionBase):
     )
     supported_platforms = ['windows', 'osx', 'linux']
     author = 'FesterHead'
-    version = (1, 0, 1)
+    version = (1, 0, 2)
     minimum_calibre_version = (6, 0, 0)
 
     actual_plugin = 'calibre_plugins.calibre_book_selector.action:BookSelectorAction'

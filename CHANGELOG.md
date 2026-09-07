@@ -14,6 +14,8 @@ Release policy:
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-09-07
+
 ### Added
 
 - Packaged `about.txt` metadata description file and empty `plugin-import-name-calibre_book_selector.txt` per official Calibre plugin guidelines.
