@@ -26,6 +26,7 @@ Release policy:
 - Comprehensive unit test cases covering single-step and multi-step decimal series progression, exclusion filtering, missing library titles, and config toggle states.
 - File-level `<!-- markdownlint-disable -->` directives on generated planning and walkthrough artifacts to suppress external markdownlint warnings in the editor.
 - Expanded Git workflow and commit policy documentation in `AGENTS.md` and `.github/copilot-instructions.md`, explicitly prohibiting automated git operations.
+- Comprehensive contributor guidelines in `CONTRIBUTING.md` covering project philosophy, branching strategy, versioning protocol, PyQt6 architecture, testing standards, and pull request checklist.
 
 ## [1.0.1] - 2026-09-06
 

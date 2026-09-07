@@ -46,6 +46,7 @@ The **Calibre Book Selector** is a Calibre 9.x Interface Action plugin. It queri
 - `build_plugin.py`: Automation script to package into `calibre-book-selector.zip` and install into Calibre.
 - `CHANGELOG.md`: Project changelog following Keep a Changelog and SemVer.
 - `README.md`: End-user documentation.
+- `CONTRIBUTING.md`: Contribution and development guidelines.
 - `about.txt`: Metadata description and version file per Calibre plugin specification.
 - `plugin-import-name-calibre_book_selector.txt`: 0-byte file declaring the plugin import namespace.
 - `LICENSE`: MIT License.

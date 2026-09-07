@@ -193,6 +193,13 @@ Open **Book Selector** &rarr; **Customize Plugin Settings...** (or click **⚙�
 - **Minimum Author Separation**: Default is `6` books (number of intervening entries required between the same author).
 - **Minimum Series Separation**: Default is `6` books (number of intervening entries required between the same series).
 - **Enforce Series Progression**: Toggle whether series order rules are enforced.
+- **Queue series books through next whole integer**: Toggle automatic queueing of follow-up books when decimal series books are selected (default: enabled).
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please review [CONTRIBUTING.md](CONTRIBUTING.md) for project philosophy, architectural guidelines, testing standards, and pull request procedures.
 
 ---
 
@@ -202,4 +209,4 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
-Calibre Book Selector plugin adheres to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Check `CHANGELOG.md` for the latest updates.
+Calibre Book Selector plugin adheres to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Check [CHANGELOG.md](CHANGELOG.md) for the latest updates.
