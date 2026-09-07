@@ -275,8 +275,8 @@ class TestRealCalibreLibrary(unittest.TestCase):
 
     def test_active_library(self):
         candidate_paths = [
-            r'M:\books\Libraries\Library\metadata.db',
             r'E:\Calibre Portable\Calibre Library\Library\metadata.db',
+            r'M:\books\Libraries\Library\metadata.db',
         ]
         db_path = None
         for p in candidate_paths:

@@ -143,7 +143,7 @@ This project is developed and managed using Google AI models. The architecture, 
 > The paths below reflect the author's local Calibre environment. Users can adapt these paths to their own setup.
 
 - **Calibre Portable Path**: `E:\Calibre Portable`
-- **Active Library Path**: `M:\books\Libraries\Library`
+- **Active Library Path**: `E:\Calibre Portable\Calibre Library\Library`
 - **Reading List Plugin Integration**: Directly synchronizes with the Calibre [Reading List plugin](https://github.com/kiwidude68/calibre_plugins/wiki/Reading-List) (`Next` list) and updates custom column `#reading_list` tags and `#read_order` list positions.
 
 ---

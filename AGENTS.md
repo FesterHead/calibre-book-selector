@@ -59,7 +59,7 @@ The **Calibre Book Selector** is a Calibre 9.x Interface Action plugin. It queri
 - **Calibre Executables**:
   - Debug CLI: `E:\Calibre Portable\Calibre\calibre-debug.exe`
   - Customize CLI: `E:\Calibre Portable\Calibre\calibre-customize.exe`
-  - Active Library DB: `M:\books\Libraries\Library\metadata.db` (fallback: `E:\Calibre Portable\Calibre Library\Library\metadata.db`)
+  - Active Library DB: `E:\Calibre Portable\Calibre Library\Library\metadata.db`
 
 ### Build & Package
 
