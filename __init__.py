@@ -12,7 +12,7 @@ class CalibreBookSelectorPlugin(InterfaceActionBase):
     )
     supported_platforms = ['windows', 'osx', 'linux']
     author = 'FesterHead'
-    version = (1, 0, 1)
+    version = (1, 0, 2)
     minimum_calibre_version = (6, 0, 0)
 
     actual_plugin = 'calibre_plugins.calibre_book_selector.action:BookSelectorAction'
@@ -29,7 +29,9 @@ class CalibreBookSelectorPlugin(InterfaceActionBase):
 
     def save_settings(self, config_widget):
         config_widget.save_settings()
+        ac = getattr(self, 'actual_plugin_', None)
+        if ac is not None and hasattr(ac, 'apply_settings'):
+            ac.apply_settings()
 
     def custom_init(self):
         pass
-

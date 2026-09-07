@@ -41,17 +41,20 @@ try:
         KEY_ENFORCE_SERIES_ORDER,
         KEY_MIN_AUTHOR_SEPARATION,
         KEY_MIN_SERIES_SEPARATION,
+        KEY_AUTO_ADD_SERIES_DECIMALS,
         DEFAULT_TARGET_LIST,
         DEFAULT_PERCENT_READ_COLUMN,
         DEFAULT_EXCLUDE_PERCENT_READ,
         DEFAULT_MIN_AUTHOR_SEPARATION,
         DEFAULT_MIN_SERIES_SEPARATION,
+        DEFAULT_AUTO_ADD_SERIES_DECIMALS,
     )
     from calibre_plugins.calibre_book_selector.selector import (
         get_eligible_books,
         get_next_order_number,
         add_books_to_target_list,
         resolve_list_name,
+        get_series_books_up_to_next_integer,
     )
 except ImportError:
     from config import (
@@ -64,17 +67,20 @@ except ImportError:
         KEY_ENFORCE_SERIES_ORDER,
         KEY_MIN_AUTHOR_SEPARATION,
         KEY_MIN_SERIES_SEPARATION,
+        KEY_AUTO_ADD_SERIES_DECIMALS,
         DEFAULT_TARGET_LIST,
         DEFAULT_PERCENT_READ_COLUMN,
         DEFAULT_EXCLUDE_PERCENT_READ,
         DEFAULT_MIN_AUTHOR_SEPARATION,
         DEFAULT_MIN_SERIES_SEPARATION,
+        DEFAULT_AUTO_ADD_SERIES_DECIMALS,
     )
     from selector import (
         get_eligible_books,
         get_next_order_number,
         add_books_to_target_list,
         resolve_list_name,
+        get_series_books_up_to_next_integer,
     )
 
 
@@ -178,6 +184,18 @@ class ConfigWidget(QWidget):
         )
         self.series_checkbox.setChecked(get_pref(KEY_ENFORCE_SERIES_ORDER, True))
         rules_layout.addWidget(self.series_checkbox)
+
+        self.auto_add_series_decimals_checkbox = QCheckBox(
+            "Add books up to next whole integer when decimal series book is chosen (e.g. 1.5 -> 2)", self
+        )
+        self.auto_add_series_decimals_checkbox.setChecked(
+            bool(get_pref(KEY_AUTO_ADD_SERIES_DECIMALS, DEFAULT_AUTO_ADD_SERIES_DECIMALS))
+        )
+        self.auto_add_series_decimals_checkbox.setToolTip(
+            "When a book with a fractional series index (such as a novella 4.5) is selected by random,\n"
+            "automatically queue it and all unread books in that series up to the next whole number (e.g. 5)."
+        )
+        rules_layout.addWidget(self.auto_add_series_decimals_checkbox)
         layout.addWidget(rules_group)
 
         # Reset row
@@ -195,6 +213,7 @@ class ConfigWidget(QWidget):
         self.author_spin.setValue(DEFAULT_MIN_AUTHOR_SEPARATION)
         self.series_spin.setValue(DEFAULT_MIN_SERIES_SEPARATION)
         self.series_checkbox.setChecked(True)
+        self.auto_add_series_decimals_checkbox.setChecked(DEFAULT_AUTO_ADD_SERIES_DECIMALS)
 
     def save_settings(self):
         target = self.target_edit.text().strip() or DEFAULT_TARGET_LIST
@@ -206,6 +225,7 @@ class ConfigWidget(QWidget):
         set_pref(KEY_MIN_AUTHOR_SEPARATION, self.author_spin.value())
         set_pref(KEY_MIN_SERIES_SEPARATION, self.series_spin.value())
         set_pref(KEY_ENFORCE_SERIES_ORDER, self.series_checkbox.isChecked())
+        set_pref(KEY_AUTO_ADD_SERIES_DECIMALS, self.auto_add_series_decimals_checkbox.isChecked())
 
 
 class ConfigDialog(QDialog):
@@ -494,20 +514,39 @@ class BookSelectorDialog(QDialog):
         target_list = get_pref(KEY_TARGET_LIST, DEFAULT_TARGET_LIST)
         actual_target = resolve_list_name(self.db, target_list)
 
+        books_to_add = [chosen]
+        if get_pref(KEY_AUTO_ADD_SERIES_DECIMALS, DEFAULT_AUTO_ADD_SERIES_DECIMALS):
+            follow_ups = get_series_books_up_to_next_integer(
+                self.db, chosen, target_list=actual_target
+            )
+            books_to_add.extend(follow_ups)
+
+        book_ids = [b['id'] for b in books_to_add]
         success, added, start_order, err = add_books_to_target_list(
-            self.gui, self.db, [chosen['id']], actual_target
+            self.gui, self.db, book_ids, actual_target
         )
         if success:
-            series_desc = f" ({chosen['series']} #{chosen['series_index']:g})" if chosen['series'] else ""
-            msg = (
-                f"Successfully added <b>{chosen['title']}</b>{series_desc} to <b>{actual_target}</b>.<br><br>"
-                f"Assigned Order: <b>#{start_order}</b>"
-            )
-            QMessageBox.information(self, "Book Added", msg)
+            if len(books_to_add) == 1:
+                series_desc = f" ({chosen['series']} #{chosen['series_index']:g})" if chosen['series'] else ""
+                msg = (
+                    f"Successfully added <b>{chosen['title']}</b>{series_desc} to <b>{actual_target}</b>.<br><br>"
+                    f"Assigned Order: <b>#{start_order}</b>"
+                )
+            else:
+                end_order = start_order + len(books_to_add) - 1
+                titles_desc = "<br>".join(
+                    f"• <b>{b['title']}</b> ({b['series']} #{b['series_index']:g})"
+                    for b in books_to_add
+                )
+                msg = (
+                    f"Successfully added <b>{len(books_to_add)} books</b> to <b>{actual_target}</b>.<br><br>"
+                    f"Assigned Order: <b>#{start_order} through #{end_order}</b>:<br><br>{titles_desc}"
+                )
+            QMessageBox.information(self, "Books Added", msg)
             self.reload_data()
             self.table.clearSelection()
             self.table.setCurrentItem(None)
-            self.books_added_signal.emit([chosen['id']], actual_target)
+            self.books_added_signal.emit(book_ids, actual_target)
         else:
             QMessageBox.critical(self, "Error", f"Failed to add book: {err}")
 
@@ -520,8 +559,21 @@ class BookSelectorDialog(QDialog):
 
         target_list = get_pref(KEY_TARGET_LIST, DEFAULT_TARGET_LIST)
         actual_target = resolve_list_name(self.db, target_list)
+
+        all_ids_to_add = list(selected_ids)
+        if get_pref(KEY_AUTO_ADD_SERIES_DECIMALS, DEFAULT_AUTO_ADD_SERIES_DECIMALS):
+            for bid in selected_ids:
+                matching = next((b for b in self.all_eligible_books if b['id'] == bid), None)
+                if matching and matching.get('series') and matching.get('series_index') is not None:
+                    follow_ups = get_series_books_up_to_next_integer(
+                        self.db, matching, target_list=actual_target
+                    )
+                    for fb in follow_ups:
+                        if fb['id'] not in all_ids_to_add:
+                            all_ids_to_add.append(fb['id'])
+
         success, added, start_order, err = add_books_to_target_list(
-            self.gui, self.db, selected_ids, actual_target
+            self.gui, self.db, all_ids_to_add, actual_target
         )
 
         if success:

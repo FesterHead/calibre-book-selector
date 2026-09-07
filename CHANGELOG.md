@@ -14,6 +14,22 @@ Release policy:
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-09-07
+
+### Added
+
+- Packaged `about.txt` metadata description file and empty `plugin-import-name-calibre_book_selector.txt` per official Calibre plugin guidelines.
+- `apply_settings()` lifecycle callback in `action.py` and `__init__.py` to reload preferences when modified via Calibre's Customize Plugin interface.
+- Expanded version minting and synchronization rules across `__init__.py`, `about.txt`, and `CHANGELOG.md` in `AGENTS.md`, Copilot instructions, and PR template.
+- Documentation links to the official [Reading List plugin wiki](https://github.com/kiwidude68/calibre_plugins/wiki/Reading-List) in `README.md` and `AGENTS.md`.
+- Automatic decimal series progression: when a book with a fractional series index (e.g. 1.5, 4.5) is selected, automatically queue it and all unread books in that series up to the next whole integer (e.g. 2.0, 5.0).
+- Checkbox configuration option in `ConfigWidget` and `ConfigDialog` to toggle the decimal series progression behavior (enabled by default).
+- Core engine methods `get_series_books_up_to_next_integer()` and `pick_random_eligible_books()` in `selector.py`.
+- Comprehensive unit test cases covering single-step and multi-step decimal series progression, exclusion filtering, missing library titles, and config toggle states.
+- File-level `<!-- markdownlint-disable -->` directives on generated planning and walkthrough artifacts to suppress external markdownlint warnings in the editor.
+- Expanded Git workflow and commit policy documentation in `AGENTS.md` and `.github/copilot-instructions.md`, explicitly prohibiting automated git operations.
+- Comprehensive contributor guidelines in `CONTRIBUTING.md` covering project philosophy, branching strategy, versioning protocol, PyQt6 architecture, testing standards, and pull request checklist.
+
 ## [1.0.1] - 2026-09-06
 
 ### Added

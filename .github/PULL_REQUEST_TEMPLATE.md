@@ -18,4 +18,4 @@ Please confirm that your Pull Request adheres to the core rules of Calibre Book 
 
 - [ ] I have executed unit/functional tests locally (`& "E:\Calibre Portable\Calibre\calibre-debug.exe" test_selector.py`) and all tests pass.
 - [ ] Plugin builds cleanly into zip (`& "E:\Calibre Portable\Calibre\calibre-debug.exe" build_plugin.py`).
-- [ ] Version numbers are synchronized across `__init__.py` and `CHANGELOG.md` (or release heading minted if releasing).
+- [ ] Version numbers are synchronized across `__init__.py`, `about.txt`, and `CHANGELOG.md` (or release heading minted if releasing).

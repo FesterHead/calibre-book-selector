@@ -20,8 +20,8 @@ Calibre's built-in **"Pick a random book"** tool is completely blind to your rea
 
 Before installing Calibre Book Selector, ensure you have the following configured in Calibre:
 
-1. **[Reading List Plugin](https://www.mobileread.com/forums/showthread.php?t=134856)** (Essential companion plugin):
-   - Manages, displays, and reorders the reading queue in Calibre.
+1. **[Reading List Plugin](https://github.com/kiwidude68/calibre_plugins/wiki/Reading-List)** (Essential companion plugin; see also [MobileRead thread](https://www.mobileread.com/forums/showthread.php?t=134856)):
+   - Manages, displays, and reorders the reading queue in Calibre (documentation on the [Reading List Wiki](https://github.com/kiwidude68/calibre_plugins/wiki/Reading-List)).
    - Install via Calibre: **Preferences** → **Plugins** → **Get new plugins** → search for **Reading List**.
    - Create a list named **`Next`** (configured as _Manual list (orderable)_).
 2. **Read Status Column** (Recommended):
@@ -65,6 +65,9 @@ The live stats bar at the top of the dialog gives full visibility into how your 
   - All other **178 higher-indexed books** across your series are held back by the series progression filter.
 - **Dynamic Queueing Progression**:
   - When you queue Book 2 of a series into **Next**, it enters the reading list and Book 3 immediately advances to become the new eligible candidate.
+- **Decimal Series Auto-Add (e.g. 1.5 &rarr; 2)**:
+  - When a book with a decimal series index (such as a short story or novella 1.5 or 4.5) is selected, the plugin automatically queues it along with all subsequent unread books in that series up to the next whole integer (e.g. 2.0 or 5.0) in ascending sequential order.
+  - This behavior can be enabled (default) or disabled via the configuration option in Plugin Settings.
 - **Standalone Books**: Books not belonging to any series (e.g. _1922_, _Armada_, _Carrie_, _Christine_, _Cujo_) are always eligible as long as they are unread and clear of spacing cooldowns.
 
 ### Rule 3: Author and Series Separation Constraints
@@ -141,7 +144,7 @@ This project is developed and managed using Google AI models. The architecture, 
 
 - **Calibre Portable Path**: `E:\Calibre Portable`
 - **Active Library Path**: `M:\books\Libraries\Library`
-- **Reading List Plugin Integration**: Directly synchronizes with the Calibre _Reading List_ plugin (`Next` list) and updates custom column `#reading_list` tags and `#read_order` list positions.
+- **Reading List Plugin Integration**: Directly synchronizes with the Calibre [Reading List plugin](https://github.com/kiwidude68/calibre_plugins/wiki/Reading-List) (`Next` list) and updates custom column `#reading_list` tags and `#read_order` list positions.
 
 ---
 
@@ -190,6 +193,13 @@ Open **Book Selector** &rarr; **Customize Plugin Settings...** (or click **⚙�
 - **Minimum Author Separation**: Default is `6` books (number of intervening entries required between the same author).
 - **Minimum Series Separation**: Default is `6` books (number of intervening entries required between the same series).
 - **Enforce Series Progression**: Toggle whether series order rules are enforced.
+- **Queue series books through next whole integer**: Toggle automatic queueing of follow-up books when decimal series books are selected (default: enabled).
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please review [CONTRIBUTING.md](CONTRIBUTING.md) for project philosophy, architectural guidelines, testing standards, and pull request procedures.
 
 ---
 
@@ -199,4 +209,4 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
-Calibre Book Selector plugin adheres to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Check `CHANGELOG.md` for the latest updates.
+Calibre Book Selector plugin adheres to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Check [CHANGELOG.md](CHANGELOG.md) for the latest updates.

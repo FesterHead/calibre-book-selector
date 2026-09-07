@@ -18,6 +18,7 @@ FILES_TO_PACKAGE = [
     'plugin-import-name-calibre_book_selector.txt',
     'CHANGELOG.md',
     'README.md',
+    'about.txt',
     'LICENSE',
     'images/icon.png',
 ]

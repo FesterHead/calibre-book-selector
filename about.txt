@@ -1,0 +1,15 @@
+Calibre Book Selector Plugin
+Version: 1.0.2
+Author: FesterHead
+License: MIT
+
+Intelligently select eligible books and series entries to add to your Reading List queue with automatic order progression.
+
+Features:
+- Single Target Reading List ('Next')
+- Automatic exclusion of read and in-progress books (% Read > 0)
+- Strict series progression ensuring books are queued in order
+- Decimal series progression auto-adding up to next whole integer (e.g. 1.5 -> 2)
+- Author and series separation spacing constraints
+- Automatic list order increment tracking
+- Interactive dialog with live search and 1-click quick random picker

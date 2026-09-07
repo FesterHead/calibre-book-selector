@@ -11,11 +11,13 @@ try:
         KEY_ENFORCE_SERIES_ORDER,
         KEY_MIN_AUTHOR_SEPARATION,
         KEY_MIN_SERIES_SEPARATION,
+        KEY_AUTO_ADD_SERIES_DECIMALS,
         DEFAULT_TARGET_LIST,
         DEFAULT_PERCENT_READ_COLUMN,
         DEFAULT_EXCLUDE_PERCENT_READ,
         DEFAULT_MIN_AUTHOR_SEPARATION,
         DEFAULT_MIN_SERIES_SEPARATION,
+        DEFAULT_AUTO_ADD_SERIES_DECIMALS,
     )
 except ImportError:
     from config import (
@@ -26,11 +28,13 @@ except ImportError:
         KEY_ENFORCE_SERIES_ORDER,
         KEY_MIN_AUTHOR_SEPARATION,
         KEY_MIN_SERIES_SEPARATION,
+        KEY_AUTO_ADD_SERIES_DECIMALS,
         DEFAULT_TARGET_LIST,
         DEFAULT_PERCENT_READ_COLUMN,
         DEFAULT_EXCLUDE_PERCENT_READ,
         DEFAULT_MIN_AUTHOR_SEPARATION,
         DEFAULT_MIN_SERIES_SEPARATION,
+        DEFAULT_AUTO_ADD_SERIES_DECIMALS,
     )
 
 READING_LIST_PREF_KEY = 'namespaced:ReadingListPlugin:settings'
@@ -366,6 +370,164 @@ def pick_random_eligible_book(
     if not eligible_books:
         return None
     return random.choice(eligible_books)
+
+
+def get_series_books_up_to_next_integer(
+    db,
+    chosen_book,
+    target_list=None,
+    exclude_percent_read=None,
+    percent_read_column=None,
+):
+    """
+    If chosen_book has a fractional series_index (e.g. 1.5 or 4.2), finds all subsequent
+    unread and unqueued books in that series up to the next whole integer (e.g. 2.0 or 5.0).
+
+    Returns:
+        list of book dicts for the follow-up books, sorted by series_index ascending.
+        Does NOT include chosen_book itself.
+    """
+    if not chosen_book:
+        return []
+
+    series_name = chosen_book.get('series')
+    series_index = chosen_book.get('series_index')
+    if not series_name or series_index is None:
+        return []
+
+    try:
+        s_idx = float(series_index)
+    except (ValueError, TypeError):
+        return []
+
+    # If it is already a whole integer (e.g. 1.0, 2.0, 5.0), no follow-ups needed
+    if s_idx.is_integer():
+        return []
+
+    import math
+    target_integer = int(math.ceil(s_idx))
+
+    if target_list is None:
+        target_list = get_pref(KEY_TARGET_LIST, DEFAULT_TARGET_LIST)
+    actual_target = resolve_list_name(db, target_list)
+
+    if exclude_percent_read is None:
+        exclude_percent_read = get_pref(KEY_EXCLUDE_PERCENT_READ, DEFAULT_EXCLUDE_PERCENT_READ)
+    if percent_read_column is None:
+        percent_read_column = get_pref(KEY_PERCENT_READ_COLUMN, DEFAULT_PERCENT_READ_COLUMN)
+
+    target_list_book_ids = set(get_list_book_ids(db, actual_target))
+    get_field = _get_field_fn(db)
+
+    if hasattr(db, 'new_api'):
+        all_book_ids = db.new_api.all_book_ids()
+    else:
+        all_book_ids = db.all_ids()
+
+    target_series_norm = series_name.strip().lower()
+    follow_ups = []
+
+    for bid in all_book_ids:
+        if bid == chosen_book['id']:
+            continue
+        if bid in target_list_book_ids:
+            continue
+
+        try:
+            s = get_field('series', bid)
+            if not s or s.strip().lower() != target_series_norm:
+                continue
+
+            raw_idx = get_field('series_index', bid)
+            try:
+                candidate_idx = float(raw_idx) if raw_idx is not None else 1.0
+            except (ValueError, TypeError):
+                candidate_idx = 1.0
+
+            # Must be strictly greater than chosen_book's index and <= next whole integer
+            if s_idx < candidate_idx <= target_integer:
+                if exclude_percent_read and _is_book_read_or_in_progress(get_field, bid, percent_read_column):
+                    continue
+
+                title = get_field('title', bid) or 'Untitled'
+                raw_authors = get_field('authors', bid) or ()
+                if isinstance(raw_authors, (list, tuple)):
+                    author_list = [a.strip() for a in raw_authors if a and a.strip()]
+                    author_str = ' & '.join(author_list)
+                else:
+                    author_str = str(raw_authors).strip()
+                    author_list = [author_str] if author_str else []
+
+                tags = get_field('tags', bid) or ()
+                tag_str = ', '.join(tags) if isinstance(tags, (list, tuple)) else str(tags)
+                rating = get_field('rating', bid) or 0
+                pubdate = get_field('pubdate', bid)
+
+                follow_ups.append({
+                    'id': bid,
+                    'title': title,
+                    'author': author_str,
+                    'author_list': author_list,
+                    'series': s,
+                    'series_index': candidate_idx,
+                    'tags': tag_str,
+                    'rating': rating,
+                    'pubdate': pubdate,
+                })
+        except Exception as e:
+            print(f"[CalibreBookSelector] Error loading follow-up metadata for book ID {bid}: {e}")
+
+    follow_ups.sort(key=lambda b: (b['series_index'], b['id']))
+    return follow_ups
+
+
+def pick_random_eligible_books(
+    db,
+    target_list=None,
+    exclude_percent_read=None,
+    percent_read_column=None,
+    enforce_series=None,
+    min_author_separation=None,
+    min_series_separation=None,
+    auto_add_series_decimals=None,
+):
+    """
+    Select a random eligible book. If auto_add_series_decimals is True and the chosen book
+    has a fractional series index (e.g. 1.5), automatically includes all subsequent unread
+    books in that series up to the next whole integer (e.g. 2.0).
+
+    Returns:
+        list of book dicts to add (empty list if no eligible books found).
+    """
+    chosen = pick_random_eligible_book(
+        db,
+        target_list=target_list,
+        exclude_percent_read=exclude_percent_read,
+        percent_read_column=percent_read_column,
+        enforce_series=enforce_series,
+        min_author_separation=min_author_separation,
+        min_series_separation=min_series_separation,
+    )
+    if not chosen:
+        return []
+
+    books = [chosen]
+    if auto_add_series_decimals is None:
+        auto_add_series_decimals = get_pref(
+            KEY_AUTO_ADD_SERIES_DECIMALS, DEFAULT_AUTO_ADD_SERIES_DECIMALS
+        )
+
+    if auto_add_series_decimals:
+        follow_ups = get_series_books_up_to_next_integer(
+            db,
+            chosen,
+            target_list=target_list,
+            exclude_percent_read=exclude_percent_read,
+            percent_read_column=percent_read_column,
+        )
+        books.extend(follow_ups)
+
+    return books
 
 
 def get_next_order_number(db, target_list=None):
