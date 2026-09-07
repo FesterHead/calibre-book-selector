@@ -31,13 +31,16 @@ The **Calibre Book Selector** is a Calibre 9.x Interface Action plugin. It queri
    - `min_author_separation` (default: 6): Authors present in the trailing $N$ entries of the target list cannot be selected.
    - `min_series_separation` (default: 6): Series present in the trailing $N$ entries of the target list cannot be selected.
 
+5. **Decimal Series Progression (Auto-Add to Next Whole Integer)**:
+   - When a book with a fractional `series_index` (e.g. 1.5, 4.2) is selected and `auto_add_series_decimals` is enabled (default: `True`), all subsequent unread, unqueued books in that series up to the next whole integer (e.g. 2.0, 5.0) are automatically queued in ascending sequential order.
+
 ---
 
 ## 📁 Repository Structure
 
 - `__init__.py`: Plugin entry point subclassing `calibre.customize.InterfaceActionBase`.
 - `action.py`: `InterfaceAction` subclass handling toolbar button, menu entries, and UI events.
-- `selector.py`: Selection engine (`get_eligible_books`, `pick_random_eligible_book`, `get_next_order_number`, `add_books_to_target_list`).
+- `selector.py`: Selection engine (`get_eligible_books`, `pick_random_eligible_book`, `pick_random_eligible_books`, `get_series_books_up_to_next_integer`, `get_next_order_number`, `add_books_to_target_list`).
 - `dialogs.py`: PyQt/Qt6 UI dialogs (`BookSelectorDialog`, `ConfigDialog`).
 - `config.py`: Preferences schema and persistence wrapper (`JSONConfig`).
 - `build_plugin.py`: Automation script to package into `calibre-book-selector.zip` and install into Calibre.
@@ -86,3 +89,11 @@ When releasing or minting a new version:
 3. **Changelog**: Move unreleased changes in `CHANGELOG.md` into a new release header `## [X.Y.Z] - YYYY-MM-DD` and retain an empty `## [Unreleased]` section.
 4. **Consistency Rule**: `__init__.py`, `about.txt`, and `CHANGELOG.md` versions MUST remain identical at all times.
 5. **Automated Release**: When a pull request is merged into `main`, GitHub Actions creates a GitHub release tagged `vX.Y.Z` with the generated `calibre-book-selector.zip` asset.
+
+---
+
+## 🚫 Git Workflow & Commit Policy
+
+- **NO Automated `git add` or `git commit`**: The agent MUST NEVER run `git add`, `git commit`, or `git push` commands, and must NOT prompt or ask the user to run them.
+- **User-Managed Commits**: All git staging, committing, and pushing is handled exclusively by the user.
+- **Commit Messages**: Do NOT generate or propose commit messages unless the user explicitly requests assistance with one.

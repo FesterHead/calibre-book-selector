@@ -65,6 +65,9 @@ The live stats bar at the top of the dialog gives full visibility into how your 
   - All other **178 higher-indexed books** across your series are held back by the series progression filter.
 - **Dynamic Queueing Progression**:
   - When you queue Book 2 of a series into **Next**, it enters the reading list and Book 3 immediately advances to become the new eligible candidate.
+- **Decimal Series Auto-Add (e.g. 1.5 &rarr; 2)**:
+  - When a book with a decimal series index (such as a short story or novella 1.5 or 4.5) is selected, the plugin automatically queues it along with all subsequent unread books in that series up to the next whole integer (e.g. 2.0 or 5.0) in ascending sequential order.
+  - This behavior can be enabled (default) or disabled via the configuration option in Plugin Settings.
 - **Standalone Books**: Books not belonging to any series (e.g. _1922_, _Armada_, _Carrie_, _Christine_, _Cujo_) are always eligible as long as they are unread and clear of spacing cooldowns.
 
 ### Rule 3: Author and Series Separation Constraints

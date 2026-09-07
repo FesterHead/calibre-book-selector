@@ -9,6 +9,7 @@ You are reviewing or writing code for **Calibre Book Selector**, an Interface Ac
 3. **NO Author or Series Clumping:** Candidates must strictly respect `min_author_separation` (default: 6) and `min_series_separation` (default: 6) relative to the trailing entries of the target list.
 4. **NO Manual DB Corruptions:** When running in the Calibre GUI, do not directly alter the Reading List database preference if the Reading List plugin interface action is available; delegate to `gui.iactions['Reading List'].add_books_to_list(...)` to trigger proper UI updates and custom column sync.
 5. **NO Unversioned Changes:** Never update `__init__.py` without updating `about.txt` and `CHANGELOG.md`, or vice versa. Versions must match SemVer format exactly.
+6. **NO Automated Git Staging or Commits:** Never run `git add`, `git commit`, or `git push`, and never ask or prompt to run them. Git staging and committing are strictly user-managed. Do not generate commit messages unless explicitly requested by the user.
 
 ## 📐 ARCHITECTURE RULES (ENFORCE THESE)
 

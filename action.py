@@ -8,10 +8,13 @@ try:
         KEY_PERCENT_READ_COLUMN,
         KEY_EXCLUDE_PERCENT_READ,
         KEY_ENFORCE_SERIES_ORDER,
+        KEY_AUTO_ADD_SERIES_DECIMALS,
         DEFAULT_TARGET_LIST,
+        DEFAULT_AUTO_ADD_SERIES_DECIMALS,
     )
     from calibre_plugins.calibre_book_selector.selector import (
         pick_random_eligible_book,
+        get_series_books_up_to_next_integer,
         add_books_to_target_list,
         resolve_list_name,
     )
@@ -26,10 +29,13 @@ except ImportError:
         KEY_PERCENT_READ_COLUMN,
         KEY_EXCLUDE_PERCENT_READ,
         KEY_ENFORCE_SERIES_ORDER,
+        KEY_AUTO_ADD_SERIES_DECIMALS,
         DEFAULT_TARGET_LIST,
+        DEFAULT_AUTO_ADD_SERIES_DECIMALS,
     )
     from selector import (
         pick_random_eligible_book,
+        get_series_books_up_to_next_integer,
         add_books_to_target_list,
         resolve_list_name,
     )
@@ -109,21 +115,41 @@ class BookSelectorAction(InterfaceAction):
             )
             return
 
+        books_to_add = [chosen]
+        if get_pref(KEY_AUTO_ADD_SERIES_DECIMALS, DEFAULT_AUTO_ADD_SERIES_DECIMALS):
+            follow_ups = get_series_books_up_to_next_integer(
+                db, chosen, target_list=actual_target
+            )
+            books_to_add.extend(follow_ups)
+
+        book_ids = [b['id'] for b in books_to_add]
         success, added, start_order, err = add_books_to_target_list(
-            self.gui, db, [chosen['id']], actual_target
+            self.gui, db, book_ids, actual_target
         )
 
         if success:
-            series_desc = f" ({chosen['series']} #{chosen['series_index']:g})" if chosen['series'] else ""
-            msg = (
-                f"Added <b>{chosen['title']}</b>{series_desc} to <b>{actual_target}</b> at Order <b>#{start_order}</b>."
-            )
-            if hasattr(self.gui, 'status_bar'):
-                self.gui.status_bar.showMessage(
-                    f"Book Selector: Added '{chosen['title']}' to {actual_target} (Order #{start_order})", 5000
+            if len(books_to_add) == 1:
+                series_desc = f" ({chosen['series']} #{chosen['series_index']:g})" if chosen['series'] else ""
+                msg = (
+                    f"Added <b>{chosen['title']}</b>{series_desc} to <b>{actual_target}</b> at Order <b>#{start_order}</b>."
                 )
+                status_msg = f"Book Selector: Added '{chosen['title']}' to {actual_target} (Order #{start_order})"
+            else:
+                end_order = start_order + len(books_to_add) - 1
+                titles_desc = "<br>".join(
+                    f"• <b>{b['title']}</b> ({b['series']} #{b['series_index']:g})"
+                    for b in books_to_add
+                )
+                msg = (
+                    f"Added <b>{len(books_to_add)} books</b> to <b>{actual_target}</b> "
+                    f"at Order <b>#{start_order} through #{end_order}</b>:<br><br>{titles_desc}"
+                )
+                status_msg = f"Book Selector: Added {len(books_to_add)} books to {actual_target} (Order #{start_order}-#{end_order})"
+
+            if hasattr(self.gui, 'status_bar'):
+                self.gui.status_bar.showMessage(status_msg, 5000)
             QMessageBox.information(self.gui, "Book Added to Queue", msg)
-            self.on_books_added([chosen['id']], actual_target)
+            self.on_books_added(book_ids, actual_target)
         else:
             QMessageBox.critical(self.gui, "Error", f"Failed to add book: {err}")
 
