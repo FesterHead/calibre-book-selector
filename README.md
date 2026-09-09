@@ -8,7 +8,7 @@
 [![GUI](https://img.shields.io/badge/GUI-PyQt6-A9DC76?style=flat-square&labelColor=221F22&logo=qt&logoColor=white)](https://riverbankcomputing.com/software/pyqt/)
 [![License](https://img.shields.io/github/license/FesterHead/calibre-book-selector?style=flat-square&color=FFD866&labelColor=221F22)](LICENSE)
 
-Have a large Calibre library and find it tedious deciding what to add to your reading list?
+Have a large [Calibre](https://calibre-ebook.com/) (or [Calibre Portable](https://calibre-ebook.com/download_portable)) library and find it tedious deciding what to add to your reading list?
 
 Calibre's built-in **"Pick a random book"** tool is completely blind to your reading workflow: it can pick books you've already read, select book #14 of a 20-book series out of order, or bunch the same author and series back-to-back in your queue.
 
@@ -18,15 +18,17 @@ Calibre's built-in **"Pick a random book"** tool is completely blind to your rea
 
 ## 📋 Prerequisites
 
-Before installing Calibre Book Selector, ensure you have the following configured in Calibre:
+Before installing Calibre Book Selector, ensure you have the following configured:
 
-1. **[Reading List Plugin](https://github.com/kiwidude68/calibre_plugins/wiki/Reading-List)** (Essential companion plugin; see also [MobileRead thread](https://www.mobileread.com/forums/showthread.php?t=134856)):
+1. **[Calibre](https://calibre-ebook.com/)** or **[Calibre Portable](https://calibre-ebook.com/download_portable)**:
+   - Version 6.0 or higher (Calibre 9.x recommended).
+2. **[Reading List Plugin](https://github.com/kiwidude68/calibre_plugins/wiki/Reading-List)** (Essential companion plugin; see also [MobileRead thread](https://www.mobileread.com/forums/showthread.php?t=134856)):
    - Manages, displays, and reorders the reading queue in Calibre (documentation on the [Reading List Wiki](https://github.com/kiwidude68/calibre_plugins/wiki/Reading-List)).
    - Install via Calibre: **Preferences** → **Plugins** → **Get new plugins** → search for **Reading List**.
    - Create a list named **`Next`** (configured as _Manual list (orderable)_).
-2. **Read Status Column** (Recommended):
+3. **Read Status Column** (Recommended):
    - A custom integer or float column tracking percent read (default: `#kobo_percent_read`) so completed and in-progress books (`% Read > 0`) are automatically excluded.
-3. **Queue Order Column** (Recommended):
+4. **Queue Order Column** (Recommended):
    - A custom series-type column (e.g. `#read_order`) linked to the **Next** list so queue positions (`Next Queue [1]`, `Next Queue [2]`, etc.) display directly in your library view.
 
 ---
@@ -142,23 +144,53 @@ This project is developed and managed using Google AI models. The architecture, 
 > [!NOTE]
 > The paths below reflect the author's local Calibre environment. Users can adapt these paths to their own setup.
 
-- **Calibre Portable Path**: `E:\Calibre Portable`
-- **Active Library Path**: `E:\Calibre Portable\Calibre Library\Library`
+- **[Calibre Portable](https://calibre-ebook.com/download_portable) Path**: `E:\Calibre Portable`
+- **Active [Calibre](https://calibre-ebook.com/) Library Path**: `E:\Calibre Portable\Calibre Library\Library`
 - **Reading List Plugin Integration**: Directly synchronizes with the Calibre [Reading List plugin](https://github.com/kiwidude68/calibre_plugins/wiki/Reading-List) (`Next` list) and updates custom column `#reading_list` tags and `#read_order` list positions.
 
 ---
 
-## 🚀 Installation & Building
+## 🚀 Installation
 
-### 1. Build and Install Automatically
+### 📦 Install from Release Zip (Recommended)
 
-Run the included build script with Calibre's Python:
+1. **Download the Plugin**:
+   - Go to the [Latest GitHub Release](https://github.com/FesterHead/calibre-book-selector/releases/latest).
+   - Under **Assets**, download `calibre-book-selector.zip`.
+   - > [!IMPORTANT]
+     > Do **not** unzip or extract the archive. Calibre installs plugins directly from the `.zip` file.
+
+2. **Load the Plugin into Calibre**:
+   - Open **[Calibre](https://calibre-ebook.com/)** or **[Calibre Portable](https://calibre-ebook.com/download_portable)**.
+   - Click **Preferences** on the main toolbar (or press `Ctrl+P`).
+   - Under the **Advanced** section (near the bottom), click **Plugins**.
+   - Click the **Load plugin from file** button in the lower-right corner.
+   - Navigate to and select the downloaded `calibre-book-selector.zip` file.
+
+3. **Confirm & Restart**:
+   - When Calibre presents the security warning (*"Installing a plugin is a security risk..."*), click **Yes** to proceed.
+   - Click **Apply** if prompted, then click **Close**.
+   - **Restart Calibre** to finalize plugin initialization.
+
+4. **Verify Toolbar Placement**:
+   - Upon restart, the **Book Selector** icon will appear on your main toolbar.
+   - If it is not visible, go to **Preferences** &rarr; **Toolbars & menus** &rarr; **The main toolbar**, find **Book Selector** in the left panel, and move it to the right panel.
+
+---
+
+### 🛠️ Build and Install from Source (Developers)
+
+If you are developing or modifying the plugin from source:
+
+#### Option A: Automatic Build & Install
+
+Run the included build script with [Calibre](https://calibre-ebook.com/)'s embedded Python:
 
 ```powershell
 & "E:\Calibre Portable\Calibre\calibre-debug.exe" build_plugin.py --install
 ```
 
-### 2. Manual Installation in Calibre
+#### Option B: Manual Build & Load
 
 1. Build the zip package:
 
@@ -166,7 +198,7 @@ Run the included build script with Calibre's Python:
    python build_plugin.py
    ```
 
-2. Open Calibre.
+2. Open [Calibre](https://calibre-ebook.com/) or [Calibre Portable](https://calibre-ebook.com/download_portable).
 3. Go to **Preferences** &rarr; **Plugins** &rarr; **Load plugin from file**.
 4. Select `calibre-book-selector.zip`.
 5. Restart Calibre.

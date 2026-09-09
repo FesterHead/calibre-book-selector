@@ -14,6 +14,11 @@ Release policy:
 
 ## [Unreleased]
 
+### Added
+
+- Documentation links to official [Calibre](https://calibre-ebook.com/) and [Calibre Portable](https://calibre-ebook.com/download_portable) sites in `README.md`.
+- Dedicated step-by-step installation section in `README.md` explaining how to download and install the plugin from a release `.zip` archive via Calibre's plugin loader.
+
 ## [1.0.2] - 2026-09-07
 
 ### Added
